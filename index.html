@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>The Form API workflow</title>
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/white.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/custom-new.css">
+
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
+  </head>
+
+  <body>
+    <header>
+      <div class="logo bubble">
+        <a href="https://events.drupal.org/prague2022">
+          <img
+            src="./assets/images/event-logo.png"
+            width="640"
+            height="142"
+            alt="Event logo"
+          >
+        </a>
+      </div>
+    </header>
+
+    <div class="reveal">
+      <div class="slides">
+        <section
+          data-state="cover"
+          data-background-image="./assets/images/event-home.jpg"
+          data-background-size="contain"
+          data-background-color="#f8f7f3"
+          data-background-position="80% 50%"
+          style="text-align: left;"
+        >
+          <h1 class="xxlarge">The Form API workflow</h1>
+        </section>
+
+        <section data-state="authors">
+          <div class="ice-breaking">
+            <article>
+              <img
+                src="./assets/images/sanzante.jpg"
+                width="100px"
+                height="100px"
+                alt="Ricardo Sanz"
+              >
+              <h2>Ricardo Sanz</h2>
+              <h3>Drupal Developer y DevOps</h3>
+              <h4>Open/Free Software and weird music</h4>
+              <a
+                href="https://drupal.org/u/tunic"
+                target="_blank"
+              >
+                drupal.org/u/tunic
+              </a>
+            </article>
+          </div>
+          <br>
+          <a
+            href="https://metadrop.net"
+            target="_blank"
+          >
+            <img
+              src="./assets/images/metadrop-logo.svg"
+              width="350"
+            >
+          </a>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Walkthrough</span>
+          </div>
+          <div class="r-hstack">
+            <ul class="column">
+              <li>The Form API</li>
+              <li>Simplified workflow</li>
+              <li>Form API stages</li>
+            </ul>
+            <ul class="column">
+              <li>Cache / Persistence</li>
+              <li>AJAX requests</li>
+              <li>Complete workflow</li>
+              <li>Key points</li>
+            </ul>
+          </div>
+        </section>
+
+        <section data-state="chapter">
+          <h1>The Form API</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Form API: What is</span>
+          </div>
+          <ul>
+            <li>An abstraction of HTML forms</li>
+            <li>Handles submit, persistence, altering and rendering</li>
+            <li>Security!</li>
+            <li>Handles AJAX in forms</li>
+            <li>Allows alterations</li>
+            <li>Safety!</li>
+            <li>Build custom forms</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Form API: How?</span>
+          </div>
+          <ul>
+            <li>"form_builder" service handles forms</li>
+            <li>Many classes involved: FormBuilder, FormValidator, FormBase, etc.</li>
+            <li>A class that implements <code>\Drupal\Core\Form\FormInterface</code></li>
+            <li>Usually extends <code>Drupal\Core\Form\FormBase</code></li>
+            <li>A form array (usually <span class="code">$form</span>)</li>
+            <li>A form state (usualy <span class="code">$form_state</span>)</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>The Form Array</span>
+          </div>
+          <ul>
+            <li>PHP array</li>
+            <li>Structure and behavior</li>
+            <li>Not exactly a Render Array</li>
+            <li>Available during all Form API stages</li>
+            <li>It is changed during stages</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>The Form State</span>
+          </div>
+          <ul>
+            <li>Usually a <span class="code">Drupal\Core\Form\FormState</span> instance</li>
+            <li>Implements <span class="code">Drupal\Core\Form\FormStateInterface</span></li>
+            <li>Contains state of the form</li>
+            <ul>
+              <li>Inputs</li>
+              <li>Errors</li>
+              <li>Flags</li>
+            </ul>
+            <li>Available during all Form API stages</li>
+            <li>It is changed during stages</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Notable values</span>
+          </div>
+          <ul>
+            <li>form_id: the form (like a class)</li>
+            <li>form_build_id: the specific form build (like an instance)</li>
+            <li>Token: ensures form was previously requested</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h1>Simplified Form API workflow diagrams</h1>
+        </section>
+
+        <section>
+          <section>
+            <div class="header">
+              <span>User requests a form</span>
+            </div>
+
+            <img class="diagram" src="./assets/illustration/simplified_fapi_diagram_01.png" />
+          </section>
+          <section>
+            <div class="header">
+              <span>User requests a form</span>
+            </div>
+            <img class="diagram" src="./assets/illustration/01_simple_fapi_workflow.png" />
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <div class="header">
+              <span>User submits a form</span>
+            </div>
+
+            <img class="diagram" src="./assets/illustration/simplified_fapi_diagram_02.png" />
+          </section>
+          <section>
+            <div class="header">
+              <span>User submits a form</span>
+            </div>
+            <img class="diagram" src="./assets/illustration/02_simple_fapi_workflow.png" />
+          </section>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>User submits a form that is rebuilt</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/simplified_fapi_diagram_03.png" />
+        </section>
+
+        <section>
+          <section>
+            <div class="header">
+              <span>Rebuilding loop</span>
+            </div>
+            <img class="diagram" src="./assets/illustration/05_simple_fapi_workflow.png" />
+          </section>
+
+          <section>
+            <div class="header">
+              <span>Rebuilding loop</span>
+            </div>
+            <img class="diagram" src="./assets/illustration/04_simple_fapi_workflow.png" />
+          </section>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Example of form rebuilding</span>
+          </div>
+          <div>On each request new form element appears</div>
+          <img class="diagram" src="./assets/illustration/06_simple_fapi_workflow.png" />
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Form responses</span>
+          </div>
+          <div class="content">Response can be:</div>
+
+          <ul>
+            <li>Markup</li>
+            <li>Redirection</li>
+            <li>A rebuilt form</li>
+            <li>A form with errors</li>
+            <li>Whatever submits decide</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h1>Is that simple?</h1>
+        </section>
+
+        <section data-state="custom"
+                 data-background-image="assets/images/fapi_workflow_complete_v2_blur.png">
+          <div class="header">
+            <span>Yes and no</span>
+          </div>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>What else?</span>
+          </div>
+          <ul>
+            <li>How Drupal handles security?</li>
+            <li>How Drupal keeps track of data between requests?</li>
+            <li>How is AJAX handled?</li>
+            <li>Validation in detail</li>
+            <li>Submission in detail</li>
+            <li>Rebuilding in detail</li>
+            <li>Workflow details</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h2>Form API stages</h2>
+            <h1 class="title">Retrieve and prepare (1/5)</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>1A - Retrieve</span>
+          </div>
+
+          <ul>
+            <li>Form build function</li>
+            <li>Dynamic elems depends on $form_state</li>
+            <li>On rebuild: form is built again here</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>1B - Prepare</span>
+          </div>
+
+          <ul>
+            <li>Build id added</li>
+            <li>Security token added for registered users (prevent CSRF)</li>
+            <li>Alter hooks!</li>
+            <li>First place to customize an existing form</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Retrieve and prepare</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/fapi_stages_01_form_structure.png" />
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Retrieve and prepare: output</span>
+          </div>
+
+          <ul>
+            <li>A built form</li>
+            <li>All dynamics elements in place</li>
+            <li>All altertions in place</li>
+            <li>This is the <i>unprocessed</i> form</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h2>Form API stages</h2>
+            <h1 class="title">Recursive building (2/5)</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Recursive building</span>
+          </div>
+          <ul>
+            <li>Goals</li>
+            <ul>
+              <li>Get a renderable array</li>
+              <li>Collect input values (defaults or sent by user)</li>
+              <li>Detect triggering button (if any)</li>
+              <li>Detect which validate handler to run</li>
+            </ul>
+            <li>Last chance to modify/tweak the form</li>
+            <ul>
+              <li>Process callback</li>
+              <li>After build callback</li>
+            </ul>
+            <li>Not standard alters!</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Recursive building</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/fapi_stages_02_form_building.png" />
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Process callbacks</span>
+          </div>
+          <ul>
+            <li>Called top-bottom</li>
+            <li>Allow for elements to expand to multiple elements</li>
+            <li>More than 100 uses in core</li>
+            <li>You may need, specially for custom elems</li>
+            <li>Example: adding JS conditionally on field value</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>After build callbacks</span>
+          </div>
+          <ul>
+            <li>Called bottom-to-top</li>
+            <li>Less than 10 uses in core</li>
+            <li>Unlikely you need it</li>
+            <li>Example: removing elements after file disk check</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Handler detection</span>
+          </div>
+          <div class="spacer"></div>
+          <div class="r-hstack">
+            <div class="r-vstack">
+              <div>Validation</div>
+              <div class="spacer-x"></div>
+              <ul>
+                <li>Button pressed <br />if not then</li>
+                <li>Form-level validate</li>
+              </ul>
+            </div>
+            <div class="r-vstack">
+              <div>Submit</div>
+              <div class="spacer-x"></div>
+              <ul>
+                <li>Button pressed <br />if not then</li>
+                <li>Form-level submit</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section data-state="chapter">
+            <h2>Form API stages</h2>
+            <h1 class="title">Validation (3/5)</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Validation</span>
+          </div>
+          <div>Form is checked (security and valid values)</div>
+          <ul>
+            <li>Check token (prevents CSRF)</li>
+            <li>Validate all elems bottom-to-top</li>
+            <li>Call elem's validate, if any</li>
+            <li>Validate form (button or form handler)</li>
+            <li>Can change $form or $form_state for next rebuild</li>
+            <li>Can enable rebuilding</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Validation</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/fapi_stages_03_validation.png" />
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Validation errors</span>
+          </div>
+          <ul>
+            <li>Errors are added to rendered form</li>
+            <li>Submit handlers are skipped</li>
+            <li>Rebuilding is forbidden</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h2>Form API stages</h2>
+            <h1 class="title">Submit (4/5)</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Submit</span>
+          </div>
+          <div>Form is executed, running any needed actions</div>
+          <ul>
+            <li>Run submit handlers (button or form)</li>
+            <li>Return response, if any</li>
+            <li>Usually a redirect or markup is delivered</li>
+            <li>Can change $form or $form_state for next rebuild</li>
+            <li>Can enable rebuilding</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Submit</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/fapi_stages_04_submission.png" />
+        </section>
+
+        <section data-state="chapter">
+            <h2>Form API stages</h2>
+            <h1 class="title">Rebuild (5/5)</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Rebuild</span>
+          </div>
+          <div>Rebuilding allows for complex forms</div>
+          <ul>
+            <li>Multi-step forms</li>
+            <li>Dynamic elements (adding, removing, etc)</li>
+            <li>AJAX calls that modifies form</li>
+            <li>Runs building steps (retrieve, prepare and actual building)</li>
+            <li>Changes in $form and $form_state allow form changes when rebuilt</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Rebuild</span>
+          </div>
+
+          <img class="diagram" src="./assets/illustration/fapi_stages_05_rebuild.png" />
+        </section>
+
+        <section data-state="chapter">
+            <h1>Cache / Persistence</h1>
+        </section>
+
+
+        <section>
+          <div class="header">
+            <span>Cache / Persistence</span>
+          </div>
+          <ul>
+            <li>Named "cache" but it is persistence + cache</li>
+            <li>Allows for AJAX, mutistep and dynamic elements</li>
+            <li>Usually Drupal takes care of it (auto-enabled)</li>
+            <li>You may need to deal with it in special cases</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Cache / Persistence: What?</span>
+          </div>
+          <ul>
+            <li>$form and $form_state are saved</li>
+            <li>
+              $form_state only given set of properties (see <span class="code">FormState::getCacheableArray</span>)
+            </li>
+            <li>Use <span class="code">FormState</span>'s functions to CRUD data that will be cached/persisted</li>
+            <ul class="code">
+              <li>get</li>
+              <li>set</li>
+              <li>has</li>
+            </ul>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h1>AJAX requests</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>AJAX requests</span>
+          </div>
+          <ul>
+            <li>They follow the same workflow</li>
+            <li>They return what #ajax_callback returns</li>
+            <li>They need cache/persistence (auto-enabled)</li>
+            <li>They can also return one or more AJAX commands</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>AJAX requests: How To</span>
+          </div>
+          <ul>
+            <li>Element triggers an AJAX request</li>
+            <li>Form is build, validated and executed</li>
+            <li>During submit, some values are changed and rebuild enabled</li>
+            <li>During rebuild, these changed values cause the form to undergo changes (e.g.: more or less elements)</li>
+            <li>#ajax_callback returns changed part of the form, the form or AJAX commands</li>
+            <li>JS layer takes reponse and processes it (e.g: inserts markup into the HMTL)</li>
+          </ul>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>AJAX requests: Don't</span>
+          </div>
+          <ul>
+            <li>Don't change $form during #ajax_callback</li>
+            <li>#ajax_callback is not a submit, it is a result gatherer!</li>
+            <li>Any change should be done during rebuilding</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h1>The complete workflow illustration</h1>
+        </section>
+
+        <section data-state="nologo"
+          data-background-image="assets/illustration/fapi_workflow_complete_v2.png"
+          data-background-size="contain"
+          data-background-color="white"
+          class="no-logo"
+        ></section>
+
+        <section>
+          <div class="header">
+            <span>Simplifications</span>
+          </div>
+          <div>Not the whole picture</div>
+          <ul>
+            <li>Batch and programmed forms are not covered</li>
+            <li>Subforms</li>
+            <li>Details</li>
+            <li>How HTML id are handled</li>
+            <li>Some edge cases</li>
+            <li>Security details</li>
+            <li>More details</li>
+          </ul>
+        </section>
+
+        <section data-state="chapter">
+            <h1>Key points</h1>
+        </section>
+
+        <section>
+          <div class="header">
+            <span>Key points</span>
+          </div>
+          <ul>
+            <li>Form's build function and alters for big changes</li>
+            <li>Process and after builds callbacks for adjustments and tweaks</li>
+            <li>Use the rebuilding loop for dynamic forms</li>
+            <li>Use FormSate to store your own variables</li>
+            <li>Use #ajax_callback to return response, not to change the form</li>
+            <li>Check Drupal Examples module!</li>
+          </ul>
+        </section>
+
+        <section
+          data-state="thanks"
+          data-background-image="./assets/images/end_03.jpg"
+          data-background-size="contain"
+          data-background-position="center"
+          data-background-color="#f8f7f3"
+        >
+          <h1 class="xlarge" style="margin-bottom: 50%">Questions?</h1>
+        </section>
+
+
+        <section
+          data-state="end"
+          data-background-image="./assets/images/end.svg"
+          data-background-size="contain"
+          data-background-position="center"
+          data-background-color="#f8f7f3"
+        ></section>
+
+        <section
+          data-state="end"
+          data-background-image="./assets/images/sponsors_01.png"
+          data-background-size="contain"
+          data-background-position="center"
+          data-background-color="#f8f7f3"
+        ></section>
+
+        <section
+          data-state="end"
+          data-background-image="./assets/images/sponsors_02.png"
+          data-background-size="contain"
+          data-background-position="center"
+          data-background-color="#f8f7f3"
+        ></section>
+
+        <section
+          data-state="thanks"
+          data-background-image="./assets/images/end_03.jpg"
+          data-background-size="contain"
+          data-background-position="center"
+          data-background-color="#f8f7f3"
+        >
+          <h1 class="xlarge" style="margin-bottom: 50%">¡Gracias!</h1>
+        </section>
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:
+      // - https://revealjs.com/initialization/
+      // - https://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        showNotes: false,
+        slideNumber: false,
+        defaultTiming: 33,
+        transition: "slide",
+        highlight: {
+          highlightOnLoad: false,
+        },
+        backgroundTransition: "fade",
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+
+    // Set data-* values depending of the type of slide.
+		for (var slide of document.getElementsByTagName('section')) {
+
+
+      slideType = slide.getAttribute('data-state');
+      switch(slideType) {
+        case 'chapter':
+          slide.setAttribute("data-background-image", "./assets/images/background_02B.png");
+          break;
+
+        case 'cover':
+          slide.setAttribute("data-background-size", "contain");
+          slide.setAttribute("data-background-size", "cover");
+          break;
+
+
+        case 'content':
+        case null:
+          slide.setAttribute("data-state", "content");
+          slide.setAttribute("data-background-image", "./assets/images/background_01.svg");
+          //slide.setAttribute("data-background-size", "contain");
+          slide.setAttribute("data-background-position", "bottom right");
+      }
+
+      if (!(slide.getAttribute("data-auto-animate-id"))) {
+          slide.setAttribute("data-auto-animate-id", "atarget");
+      }
+
+		}
+    </script>
+  </body>
+</html>
